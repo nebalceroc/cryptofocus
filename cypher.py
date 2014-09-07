@@ -18,7 +18,27 @@ def xor(seg1,seg2):
 
     return c
 
-print xor('111','011')
+def bin_to_int(message):
+    segment_size = 8;
+    cypher_list = []
+    if(len(message) % segment_size != 0):
+        amount = segment_size-(len(message) % segment_size)
+     
+    for x in range(amount):
+        message+='0'
+        
+    segment_list = split_string(message,segment_size)
+    for segment in segment_list:
+        dec = 0;
+        for x in range(len(segment)):
+            pot=int(segment[x])*(2**(7-x))
+            dec= dec + pot
+        cypher_list.append(dec)
+    print segment_list
+#     print cypher_list 
+    return cypher_list  
+    
+#print xor('111','011')
   
 class Cypher:   
     key_S_box = [4,8,1,7,3,5,6,2] 
@@ -36,13 +56,13 @@ class Cypher:
     for c in char_arr:
         bin_arr.append('0'+bin(c)[2:])
         message+='0'+bin(c)[2:]
-    
+    amount = 0;
     if(len(message) % segment_size != 0):
         amount = segment_size-(len(message) % segment_size)
     
-        
-    for x in range(amount):
-        message+='0'
+    if (amount != 0):    
+        for x in range(amount):
+            message+='0'
         
     segment_list = split_string(message,segment_size)
     first=True
@@ -68,7 +88,8 @@ class Cypher:
     for segment in segment_list:
         cypher_segment_list1.append(f.cypherSegment(segment))
         
-        
+    message_final = bin_to_int(cypertext)    
         
     print message
     print cypertext
+    print message_final 
