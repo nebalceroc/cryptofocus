@@ -159,9 +159,10 @@ def sbox(index,segment):#sbox de operacion f
     
     return result
 
-def intToBinary(integer,size):
-    binary = bin(integer)
+def intToBinary(num,size):
+    binary = bin(num)
     binary = binary[2:]
+            
     if len(binary) <= size:
         for i in range(size-len(binary)):
             binary = "0"+binary;
@@ -178,12 +179,17 @@ def inner(r,k):#inner function
         d += sbox(i, c[i])
     return permutation(d)
 
-def cifrado(message,key):
-    ciphersegments=[]   
-    msg = stringtobin(message)
-    msgs = split_string(msg, 64)
+def cifrado(message,key,opc):
+    ciphersegments=[]
     binkey = stringtobin(key)
-    keys = calckeys(binkey, 0)
+    if (opc ==0):   
+        msg = stringtobin(message)
+    else :
+        msg = hextobin(message)
+        binkey = key
+    msgs = split_string(msg, 64)
+
+    keys = calckeys(binkey, opc)
     for i in msgs:
          cipher = ip(i)
          for j in range(16):
@@ -201,11 +207,45 @@ def hexfin(msg):
         b.append(hex(int(x,2))[2:])
     return b
     
+def bintostr(msg):
+    a = split_string(msg, 8)
+    b = []
+    cypher_list = []
+    for segment in a:
+        dec = 0;
+        for x in range(len(segment)):
+            pot=int(segment[x])*(2**(7-x))
+            dec= dec + pot
+        cypher_list.append(chr(dec))
+    return cypher_list  
 
+def hextobin(msg):
+    a = split_string(msg,2)
+    result = [] 
+    num_of_bits = 8
+    for i in a:
+        result.append(bin(int(i, 16))[2:].zfill(num_of_bits))
+        
+    return "".join(result)
+
+
+#parametros para encripcion
 message = "WINTERFELLCOMING"
 key = "CIFRADOS"
-msg = cifrado(message, key)
-texto_cifrado=hexfin(msg)
-print msg
+#parametros para desencripcion
+msgdes = "528CCD3A0BEC04166AB34E9B33AF976A"
+keybin = hextobin("3130353638343633")
+
+
+opc = 0 #0 si es desencriptacion, uno si es encriptado
+if (opc == 0):
+    msg = cifrado(message, key,opc)
+    texto_cifrado=hexfin(msg)
+else:
+    msg = cifrado(msgdes, keybin,opc)
+    texto_cifrado=bintostr(msg)
+
+
+
 print texto_cifrado
       
